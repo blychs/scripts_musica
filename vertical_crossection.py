@@ -17,10 +17,6 @@ def linear_equation_from_points(lat_init, lat_end, lon_init, lon_end):
     returns slope, intercept
     """
 
-    if lon_init > lon_end:
-        raise Exception("Initial longitude should be less or equal than final longitude.")
-    if lat_init > lat_end:
-        raise Exception("Initial latitude should be less or equal than final latitude.")
     if (lon_init == lon_end) and (lat_init == lat_end):
         raise Exception("Initial and final coordinates are the same. No line is possible.")
     if lon_init == lon_end:
@@ -47,6 +43,10 @@ def cross_section_points(lat_init, lat_end, lon_init, lon_end, step):
     step should be the step in longitude. lat will adatp
     to that.
     """
+    if lon_init > lon_end:
+        raise Exception("Initial longitude should be less or equal than final longitude.")
+    if lat_init > lat_end:
+        raise Exception("Initial latitude should be less or equal than final latitude.")
     if lat_init == lat_end:
         lons = np.arange(lon_init, lon_end+step, step)
         lats = np.ones(len(lons)) * lat_init
@@ -65,3 +65,4 @@ def cross_section_points(lat_init, lat_end, lon_init, lon_end, step):
     print("lons", lons)
     lonlat = np.stack((lons, lats), axis=1)
     return lonlat
+
