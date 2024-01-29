@@ -1,16 +1,16 @@
 """
 The name of this module, right now, is a lie.
 It actually selects points as close as possible to
-the cross section that you select using nearest neighbour, and it plots them.
+the cross section that you select using nearest neighbour.
 """
-
 
 import xarray as xr
 import nearest_neighbour as nn
 import numpy as np
-import matplotlib.pyplot as plt
+import numpy.typing as npt
 
-def linear_equation_from_points(lat_init, lat_end, lon_init, lon_end):
+
+def linear_equation_from_points(lat_init, lat_end, lon_init, lon_end) -> tuple:
     """
     Find the linear equation from two points.
     lat = m * lon + lat_init
@@ -32,10 +32,8 @@ def linear_equation_from_points(lat_init, lat_end, lon_init, lon_end):
         intercept = lat_end
     else:
         intercept = lat_init - (slope * lon_init)
-    print(slope, intercept)
     return slope, intercept
-
-def cross_section_points(lat_init, lat_end, lon_init, lon_end, step):
+def cross_section_points(lat_init, lat_end, lon_init, lon_end, step) -> npt.NDArray:
     """
     Selects all points using nearest neighbour.
     step should be in degrees.
@@ -61,8 +59,24 @@ def cross_section_points(lat_init, lat_end, lon_init, lon_end, step):
         lons = np.arange(lon_init, lon_end+step, step)
         lats = slope * lons + intercept
 
-    print("lats", lats)
-    print("lons", lons)
     lonlat = np.stack((lons, lats), axis=1)
     return lonlat
 
+
+def ncol_crossection(lonlat, ds_model) -> list:
+    """
+    Creates an array with all the crossection points 
+    in the model using nearest neighbour
+    It returns a list of ncol
+    """
+    ncol_list = []
+    for coordinate in  lonlat:
+        ncol_list.append(
+            nn.nearest_neighbour_index(
+            lon_target = coordinate[0],
+            lat_target = coordinate[1],
+            ds_model=ds_model
+            )
+        )
+    return ncol_list
+    
