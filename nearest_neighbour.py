@@ -37,6 +37,5 @@ def nearest_neighbour_val(variable, lat_target, lon_target, ds_model):
     Return values at nearest neighbour
     """
     ncol = nearest_neighbour_index(lat_target, lon_target, ds_model)
-    print(ncol)
     data = ds_model[variable].sel(ncol=ncol)
     return data
